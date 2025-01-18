@@ -1,29 +1,46 @@
-import { useId } from "react";
+import { memo, useState } from "react";
 
-function Input(props) {
-  const { id = "input", label } = props;
-  const inputId = useId();
+const TodoList = memo((props) => {
+  const { todos } = props;
+  console.log("call todo list");
   return (
     <>
-      <label>
-        <span>{label} </span>
-        <input type="text" id={`${inputId}-${id}`} />
-      </label>
-      <p aria-details={`${inputId}-${id}`}>
-        Name should contain at least first name and last name.
-      </p>
+      <h2>My Todo List</h2>
+      {todos.map((todo, index) => {
+        return <p key={`${todo}-${index}`}>{todo}</p>;
+      })}
     </>
   );
-}
+});
+
+TodoList.displayName = "TodoList";
+
+const Counter = memo((props) => {
+  const { count } = props;
+  console.log("call counter");
+  return <h2>Count: {count}</h2>;
+});
+
+Counter.displayName = "Counter";
 
 function App() {
-  const inputId = useId();
+  const [count, setCount] = useState(0);
+  const [todos, setTodos] = useState(["Coding", "CreateVideo"]);
+
+  const increment = () => {
+    setCount((count) => count + 1);
+  };
+
+  const addTodo = (newTodo) => {
+    setTodos((todos) => [...todos, newTodo]);
+  };
+
   return (
     <>
-      <input type="text" id={inputId} />
-      <Input id="firstname" />
-      <Input />
-      <Input />
+      <TodoList todos={todos} />
+      <button onClick={() => addTodo("Playing Piano")}>Add Todo</button>
+      <Counter count={count} />
+      <button onClick={increment}>Increment</button>
     </>
   );
 }
